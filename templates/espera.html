@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Gerenciamento da Fila de Espera</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='estilo.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            background-image: url("{{ url_for('static', filename='tela_espera.png') }}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+        }
+        /* Transparência para ver o fundo */
+        .bg-white {
+            background-color: rgba(255, 255, 255, 0.95) !important;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-dark" style="background-color: rgba(27, 54, 93, 0.9);">
+        <div class="container-fluid">
+            <a class="btn btn-outline-light btn-sm fw-bold" href="/">← Menu Principal</a>
+            <span class="navbar-text text-white fw-bold">GERENCIAMENTO DA FILA DE ESPERA</span>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-4 px-4">
+        <form method="GET" action="/espera" class="row g-3 bg-white p-3 shadow-sm rounded mb-4 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label fw-bold">Profissional:</label>
+                <select name="profissional" class="form-select">
+                    <option {% if prof_atual == 'Dra. Jamile' %}selected{% endif %}>Dra. Jamile</option>
+                    <option {% if prof_atual == 'Dra. Laurice' %}selected{% endif %}>Dra. Laurice</option>
+                    <option {% if prof_atual == 'Dr. Gerlando' %}selected{% endif %}>Dr. Gerlando</option>
+                    <option {% if prof_atual == 'Jadson' %}selected{% endif %}>Jadson</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-bold">Data do Agendamento:</label>
+                <input type="date" name="data" class="form-control" value="{{ data_atual }}" required>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100 fw-bold">Filtrar</button>
+            </div>
+        </form>
+
+        <form method="POST" action="/acoes_espera" id="formAcoes">
+            <input type="hidden" name="prof_atual" value="{{ prof_atual }}">
+            <input type="hidden" name="data_consulta" value="{{ data_atual }}">
+
+            <div class="row">
+                <div class="col-md-6">
+                    <h5 class="text-warning fw-bold border-bottom pb-2">Fila de Espera (Aguardando Data)</h5>
+                    <div class="bg-white shadow-sm rounded overflow-auto" style="height: 450px;">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-warning sticky-top">
+                                <tr>
+                                    <th scope="col"><input class="form-check-input" type="checkbox" id="checkAllFila"></th>
+                                    <th>ID</th>
+                                    <th>Nome</th>
+                                    <th>Telefone</th>
+                                    <th>Prioridade</th>
+                                    <th>Retorno</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for pac in fila %}
+                                <tr>
+                                    <td>
+                                        <input class="form-check-input pac-check" type="checkbox" name="pacientes_ids" value="{{ pac[0] }}" 
+                                        data-nome="{{ pac[1] }}" data-tel="{{ pac[2] }}" data-prior="{{ pac[3] }}" data-tipo="{{ pac[4] }}" data-prof="{{ pac[5] }}">
+                                    </td>
+                                    <td>{{ pac[0] }}</td>
+                                    <td>{{ pac[1] }}</td>
+                                    <td>{{ pac[2] }}</td>
+                                    <td>{{ pac[3] }}</td>
+                                    <td>{% if pac[4] == 'Retorno' %}✅{% endif %}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <h5 class="text-success fw-bold border-bottom pb-2">Lista do Dia (Agendados)</h5>
+                    <div class="bg-white shadow-sm rounded overflow-auto" style="height: 450px;">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-success sticky-top">
+                                <tr>
+                                    <th scope="col"><input class="form-check-input" type="checkbox" id="checkAllAgenda"></th>
+                                    <th>ID</th>
+                                    <th>Nome</th>
+                                    <th>Telefone</th>
+                                    <th>Prioridade</th>
+                                    <th>Retorno</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for pac in agenda %}
+                                <tr>
+                                    <td>
+                                        <input class="form-check-input pac-check" type="checkbox" name="pacientes_ids" value="{{ pac[0] }}"
+                                        data-nome="{{ pac[1] }}" data-tel="{{ pac[2] }}" data-prior="{{ pac[3] }}" data-tipo="{{ pac[4] }}" data-prof="{{ pac[5] }}">
+                                    </td>
+                                    <td>{{ pac[0] }}</td>
+                                    <td>{{ pac[1] }}</td>
+                                    <td>{{ pac[2] }}</td>
+                                    <td>{{ pac[3] }}</td>
+                                    <td>{% if pac[4] == 'Retorno' %}✅{% endif %}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between mt-4 bg-white p-3 shadow-sm rounded">
+                <div>
+                    <button type="submit" name="acao" value="mover_agenda" class="btn btn-success fw-bold me-2">Mover para Agenda ➔</button>
+                    <button type="submit" name="acao" value="voltar_espera" class="btn btn-warning text-dark fw-bold me-2">⬅ Voltar para Fila</button>
+                    <button type="button" class="btn btn-info text-white fw-bold" onclick="abrirModalEdicao()">✏️ Editar Paciente</button>
+                </div>
+                <button type="submit" name="acao" value="excluir" class="btn btn-danger fw-bold" onclick="return confirm('Deletar os pacientes selecionados?');">🗑️ Excluir Selecionados</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="modal fade" id="modalEditar" tabindex="-1">
+        <div class="modal-dialog">
+            <form method="POST" action="/editar_paciente" class="modal-content">
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title fw-bold">Editar Paciente</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="prof_atual" value="{{ prof_atual }}">
+                    <input type="hidden" name="data_consulta" value="{{ data_atual }}">
+                    <input type="hidden" name="edit_id" id="edit_id">
+                    
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Nome Completo</label>
+                        <input type="text" name="edit_nome" id="edit_nome" class="form-control" required>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Telefone</label>
+                        <input type="text" name="edit_telefone" id="edit_telefone" class="form-control" required>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Profissional</label>
+                        <select name="edit_profissional" id="edit_profissional" class="form-select">
+                            <option>Dra. Jamile</option>
+                            <option>Dra. Laurice</option>
+                            <option>Dr. Gerlando</option>
+                            <option>Jadson</option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Prioridade</label>
+                        <select name="edit_prioridade" id="edit_prioridade" class="form-select">
+                            <option>Eletivo</option>
+                            <option>Prioritário</option>
+                            <option>Urgente</option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Tipo de Atendimento</label>
+                        <select name="edit_tipo" id="edit_tipo" class="form-select">
+                            <option>Primeira Vez</option>
+                            <option>Retorno</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success fw-bold w-100">💾 Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('checkAllFila').addEventListener('change', function(e) {
+            document.querySelectorAll('.col-md-6:first-child .pac-check').forEach(checkbox => checkbox.checked = e.target.checked);
+        });
+
+        document.getElementById('checkAllAgenda').addEventListener('change', function(e) {
+            document.querySelectorAll('.col-md-6:last-child .pac-check').forEach(checkbox => checkbox.checked = e.target.checked);
+        });
+
+        function abrirModalEdicao() {
+            const checkboxes = document.querySelectorAll('.pac-check:checked');
+            if (checkboxes.length !== 1) {
+                alert("Por favor, selecione EXATAMENTE UM paciente para editar.");
+                return;
+            }
+            
+            const selecionado = checkboxes[0];
+            
+            document.getElementById('edit_id').value = selecionado.value;
+            document.getElementById('edit_nome').value = selecionado.dataset.nome;
+            document.getElementById('edit_telefone').value = selecionado.dataset.tel;
+            document.getElementById('edit_profissional').value = selecionado.dataset.prof;
+            document.getElementById('edit_prioridade').value = selecionado.dataset.prior;
+            document.getElementById('edit_tipo').value = selecionado.dataset.tipo;
+            
+            new bootstrap.Modal(document.getElementById('modalEditar')).show();
+        }
+    </script>
+</body>
+</html>

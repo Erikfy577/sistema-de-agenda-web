@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro - Telessaúde</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='estilo.css') }}">
+    <style>
+        body {
+            background-image: url("{{ url_for('static', filename='tela_cadastro.png') }}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark">
+        <div class="container-fluid">
+            <a class="btn btn-outline-light btn-sm fw-bold" href="/">← Voltar ao Início</a>
+            <span class="navbar-text text-white fw-bold">NOVO CADASTRO</span>
+        </div>
+    </nav>
+
+    <div class="container mt-5 mb-5">
+        <div class="card shadow mx-auto glass-card" style="max-width: 600px;">
+            <div class="card-body p-5">
+                {% if mensagem %}
+                <div class="alert alert-success fw-bold text-center">{{ mensagem }}</div>
+                {% endif %}
+                
+                <form method="POST" action="/cadastro">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Nome Completo:</label>
+                        <input type="text" name="nome" class="form-control" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Telefone / WhatsApp:</label>
+                        <input type="text" name="telefone" class="form-control" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Profissional:</label>
+                        <select name="profissional" class="form-select">
+                            <option>Dra. Jamile</option>
+                            <option>Dra. Laurice</option>
+                            <option>Dr. Gerlando</option>
+                            <option>Jadson</option>
+                        </select>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label fw-bold">Tipo de Atendimento:</label>
+                            <select name="atendimento_tipo" class="form-select">
+                                <option value="Primeira Vez">Nova Consulta</option>
+                                <option value="Retorno">Retorno</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label fw-bold">Prioridade:</label>
+                            <select name="prioridade" class="form-select">
+                                <option value="Eletivo">Eletivo</option>
+                                <option value="Prioritário">Prioritário</option>
+                                <option value="Urgente">Urgente</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100 py-2 fw-bold mb-4">Salvar na Fila</button>
+                </form>
+
+                <hr class="text-muted">
+                <div class="text-center mt-3">
+                    <p class="text-muted mb-2 small fw-bold">Deseja baixar o histórico completo do sistema?</p>
+                    <a href="/exportar_pacientes" class="btn btn-outline-info fw-bold w-100">📊 Exportar para Planilha (Excel)</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>

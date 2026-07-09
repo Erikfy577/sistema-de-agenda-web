@@ -1,0 +1,78 @@
+/* Variáveis de Cores do Sistema */
+:root {
+    --azul-principal: #1B365D;
+    --verde-sucesso: #18BC9C;
+    --laranja-alerta: #F39C12;
+    --azul-claro: #3498DB;
+}
+
+/* =========================================
+   EFEITO DE VIDRO (GLASSMORPHISM)
+   ========================================= */
+.glass-card {
+    background: rgba(255, 255, 255, 0.92) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+/* Animação de flutuar ao passar o mouse (usado no Menu) */
+.glass-card.hover-effect:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* =========================================
+   BARRA DE NAVEGAÇÃO SUPERIOR
+   ========================================= */
+.navbar {
+    background-color: rgba(27, 54, 93, 0.95) !important;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+/* =========================================
+   BOTÕES COM ANIMAÇÃO
+   ========================================= */
+.btn {
+    border-radius: 8px;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Leve expansão ao passar o mouse em qualquer botão */
+.btn:hover {
+    transform: scale(1.03);
+}
+
+/* =========================================
+   TABELAS E FUNDOS BRANCOS (Espera e Agenda)
+   ========================================= */
+.bg-white {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+table {
+    border-radius: 8px;
+    overflow: hidden; /* Mantém as bordas da tabela arredondadas */
+}
+
+/* =========================================
+   CAIXAS DE TEXTO E SELEÇÃO (Formulários)
+   ========================================= */
+.form-control, .form-select {
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+/* Cor azul personalizada ao clicar para digitar */
+.form-control:focus, .form-select:focus {
+    border-color: var(--azul-claro);
+    box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+}
