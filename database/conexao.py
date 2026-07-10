@@ -19,16 +19,16 @@ try:
     conexao = sqlite3.connect(banco)
     cursor = conexao.cursor()
     
-    # Adiciona a nova coluna com valor padrão 'Nenhum'
-    cursor.execute("ALTER TABLE pacientes ADD COLUMN status_aviso TEXT DEFAULT 'Nenhum'")
+    # Adiciona a nova coluna para controle de presença/falta
+    cursor.execute("ALTER TABLE pacientes ADD COLUMN status_atendimento TEXT DEFAULT 'Agendado'")
     
     conexao.commit()
-    print("✅ Banco de dados atualizado! Coluna 'status_aviso' adicionada com sucesso.")
+    print("✅ Banco de dados atualizado! Coluna 'status_atendimento' adicionada com sucesso.")
 
 except sqlite3.OperationalError as erro:
-    # Se você rodar o código duas vezes sem querer, ele avisa em vez de quebrar
+    # Evita quebra caso o código seja rodado mais de uma vez
     if "duplicate column name" in str(erro).lower():
-        print("⚠️ A coluna 'status_aviso' já existe no banco de dados. Tudo certo!")
+        print("⚠️ A coluna 'status_atendimento' já existe no banco de dados. Tudo certo!")
     else:
         print(f"❌ Erro operacional: {erro}")
 except Exception as erro:

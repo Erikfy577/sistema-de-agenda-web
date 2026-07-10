@@ -1,593 +1,171 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
+    <meta charset="UTF-8">
+    <title>Agenda do Dia</title>
 
-<meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='estilo.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='icone.ico') }}" type="image/x-icon">
 
-<title>Agenda do Dia</title>
+    <style>
+        body {
+            background-image: url("{{ url_for('static', filename='tela_agenda.png') }}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+        }
 
+        .bg-white {
+            background-color: rgba(255,255,255,0.95)!important;
+        }
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-rel="stylesheet">
-<link rel="stylesheet" href="{{ url_for('static', filename='estilo.css') }}">
-<link rel="icon" href="{{ url_for('static', filename='icone.ico') }}" type="image/x-icon">
-
-<style>
-
-
-body {
-
-    background-image: url("{{ url_for('static', filename='tela_agenda.png') }}");
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-
-}
-
-
-
-.bg-white {
-
-    background-color: rgba(255,255,255,0.95)!important;
-
-}
-
-
-
-.navbar-custom {
-
-    background-color: rgba(27,54,93,0.90);
-
-}
-
-
-
-</style>
-
-
+        .navbar-custom {
+            background-color: rgba(27,54,93,0.90);
+        }
+    </style>
 </head>
-
 
 <body>
 
-
 <nav class="navbar navbar-dark navbar-custom">
-
-
-<div class="container-fluid">
-
-
-<a class="btn btn-outline-light btn-sm fw-bold"
-href="/">
-
-← Menu Principal
-
-</a>
-
-
-<span class="navbar-text text-white fw-bold">
-
-AGENDA DO DIA E AUTOMAÇÃO
-
-</span>
-
-
-</div>
-
-
+    <div class="container-fluid">
+        <a class="btn btn-outline-light btn-sm fw-bold" href="/">← Menu Principal</a>
+        <span class="navbar-text text-white fw-bold">AGENDA DO DIA E AUTOMAÇÃO</span>
+    </div>
 </nav>
-
-
-
-
 
 <div class="container mt-4">
 
+    <form method="GET" action="/agenda" class="row g-3 bg-white p-3 shadow-sm rounded mb-4 align-items-end">
+        <div class="col-md-4">
+            <label class="form-label fw-bold">Profissional:</label>
+            <select name="profissional" class="form-select">
+                <option {% if prof_atual == 'Dra. Jamile' %}selected{% endif %}>Dra. Jamile</option>
+                <option {% if prof_atual == 'Dra. Laurice' %}selected{% endif %}>Dra. Laurice</option>
+                <option {% if prof_atual == 'Dr. Gerlando' %}selected{% endif %}>Dr. Gerlando</option>
+                <option {% if prof_atual == 'Jadson' %}selected{% endif %}>Jadson</option>
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label fw-bold">Data das Consultas:</label>
+            <input type="date" name="data" class="form-control" value="{{ data_atual }}" required>
+        </div>
+
+        <div class="col-md-4">
+            <button type="submit" class="btn btn-primary w-100 fw-bold">Buscar Agenda</button>
+        </div>
+    </form>
 
 
+    <form method="POST" action="/acoes_agenda">
+        <input type="hidden" name="prof_atual" value="{{ prof_atual }}">
+        <input type="hidden" name="data_consulta" value="{{ data_atual }}">
 
+        <div class="bg-white shadow-sm rounded overflow-auto p-3">
+            <table class="table table-striped align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th style="width:40px"><input class="form-check-input" type="checkbox" id="checkAll"></th>
+                        <th>ID</th>
+                        <th>Paciente</th>
+                        <th>Telefone</th>
+                        <th>Prioridade</th>
+                        <th>Tipo</th>
+                        <th>Aviso WhatsApp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pac in pacientes %}
+                    <tr>
+                        <td>
+                            <input class="form-check-input pac-check" type="checkbox" name="pacientes_ids" value="{{ pac[0] }}">
+                        </td>
+                        <td>{{ pac[0] }}</td>
+                        <td class="fw-bold">{{ pac[1] }}</td>
+                        <td>{{ pac[2] }}</td>
+                        <td>
+                            {% if pac[3] == 'Urgente' %}
+                                <span class="badge bg-danger">{{ pac[3] }}</span>
+                            {% elif pac[3] == 'Prioritário' %}
+                                <span class="badge bg-warning text-dark">{{ pac[3] }}</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ pac[3] }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ pac[4] }}</td>
+                        <td>
+                            {% if pac[5] == 'Enviado' %}
+                                <span class="text-success fw-bold">✅ Enviado</span>
+                            {% else %}
+                                <span class="text-muted">⏳ Pendente</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
-<form method="GET"
-action="/agenda"
-class="row g-3 bg-white p-3 shadow-sm rounded mb-4 align-items-end">
+        <div class="mt-4 bg-white p-3 shadow-sm rounded">
+            <div class="d-flex flex-wrap align-items-end gap-2">
+                
+                <div class="me-3">
+                    <label class="form-label fw-bold mb-0 text-muted">Período:</label>
+                    <select name="periodo" class="form-select border-info fw-bold">
+                        <option>Manhã</option>
+                        <option>Tarde</option>
+                        <option>Noite</option>
+                    </select>
+                </div>
 
+                <button type="submit" name="acao" value="notificar_whatsapp" class="btn btn-success fw-bold">
+                    💬 Enviar Mensagem
+                </button>
 
+                <button type="submit" name="acao" value="notificar_amanha" class="btn btn-warning fw-bold">
+                    🔔 Confirmar Consulta Amanhã
+                </button>
 
-<div class="col-md-4">
+                <button type="submit" name="acao" value="atendido" class="btn btn-primary fw-bold" onclick="return confirm('Marcar os pacientes selecionados como ATENDIDOS?');">
+                    ✔ Atendido
+                </button>
 
+                <button type="submit" name="acao" value="falta" class="btn btn-secondary fw-bold" onclick="return confirm('Tem certeza que deseja registrar FALTA para os pacientes selecionados?');">
+                    ❌ Falta
+                </button>
 
-<label class="form-label fw-bold">
+                <button type="submit" name="acao" value="excluir" class="btn btn-danger fw-bold ms-auto" onclick="return confirm('ATENÇÃO: Tem certeza que deseja EXCLUIR permanentemente os pacientes selecionados? Esta ação não pode ser desfeita.');">
+                    🗑️ Excluir
+                </button>
 
-Profissional:
-
-</label>
-
-
-
-<select name="profissional"
-class="form-select">
-
-
-<option {% if prof_atual == 'Dra. Jamile' %}selected{% endif %}>
-Dra. Jamile
-</option>
-
-
-<option {% if prof_atual == 'Dra. Laurice' %}selected{% endif %}>
-Dra. Laurice
-</option>
-
-
-<option {% if prof_atual == 'Dr. Gerlando' %}selected{% endif %}>
-Dr. Gerlando
-</option>
-
-
-<option {% if prof_atual == 'Jadson' %}selected{% endif %}>
-Jadson
-</option>
-
-
-</select>
-
+            </div>
+        </div>
+    </form>
 
 </div>
-
-
-
-
-<div class="col-md-4">
-
-
-<label class="form-label fw-bold">
-
-Data das Consultas:
-
-</label>
-
-
-<input type="date"
-name="data"
-class="form-control"
-value="{{ data_atual }}"
-required>
-
-
-</div>
-
-
-
-
-
-<div class="col-md-4">
-
-
-<button type="submit"
-class="btn btn-primary w-100 fw-bold">
-
-Buscar Agenda
-
-</button>
-
-
-</div>
-
-
-</form>
-
-
-
-
-
-
-
-<form method="POST"
-action="/acoes_agenda">
-
-
-
-<input type="hidden"
-name="prof_atual"
-value="{{ prof_atual }}">
-
-
-
-<input type="hidden"
-name="data_consulta"
-value="{{ data_atual }}">
-
-
-
-
-
-
-<div class="bg-white shadow-sm rounded overflow-auto p-3">
-
-
-<table class="table table-striped align-middle">
-
-
-
-<thead class="table-dark">
-
-
-<tr>
-
-
-<th style="width:40px">
-
-<input class="form-check-input"
-type="checkbox"
-id="checkAll">
-
-</th>
-
-
-<th>ID</th>
-
-<th>Paciente</th>
-
-<th>Telefone</th>
-
-<th>Prioridade</th>
-
-<th>Tipo</th>
-
-<th>Aviso WhatsApp</th>
-
-
-</tr>
-
-
-</thead>
-
-
-
-
-<tbody>
-
-
-{% for pac in pacientes %}
-
-
-<tr>
-
-
-<td>
-
-
-<input class="form-check-input pac-check"
-type="checkbox"
-name="pacientes_ids"
-value="{{ pac[0] }}">
-
-
-</td>
-
-
-
-<td>
-
-{{ pac[0] }}
-
-</td>
-
-
-
-<td class="fw-bold">
-
-{{ pac[1] }}
-
-</td>
-
-
-
-<td>
-
-{{ pac[2] }}
-
-</td>
-
-
-
-
-<td>
-
-
-{% if pac[3] == 'Urgente' %}
-
-
-<span class="badge bg-danger">
-
-{{ pac[3] }}
-
-</span>
-
-
-
-{% elif pac[3] == 'Prioritário' %}
-
-
-<span class="badge bg-warning text-dark">
-
-{{ pac[3] }}
-
-</span>
-
-
-
-{% else %}
-
-
-<span class="badge bg-secondary">
-
-{{ pac[3] }}
-
-</span>
-
-
-{% endif %}
-
-
-
-</td>
-
-
-
-
-<td>
-
-{{ pac[4] }}
-
-</td>
-
-
-
-<td>
-
-
-{% if pac[5] == 'Enviado' %}
-
-
-<span class="text-success fw-bold">
-
-✅ Enviado
-
-</span>
-
-
-{% else %}
-
-
-<span class="text-muted">
-
-⏳ Pendente
-
-</span>
-
-
-{% endif %}
-
-
-
-</td>
-
-
-
-</tr>
-
-
-{% endfor %}
-
-
-
-</tbody>
-
-
-</table>
-
-
-</div>
-
-
-
-
-
-
-
-
-
-<div class="d-flex justify-content-between align-items-center mt-4 bg-white p-3 shadow-sm rounded">
-
-
-
-<div class="d-flex align-items-center">
-
-
-
-
-
-<div class="me-3">
-
-
-<label class="form-label fw-bold mb-0 text-muted">
-
-Período:
-
-</label>
-
-
-
-<select name="periodo"
-class="form-select border-info fw-bold">
-
-
-<option>Manhã</option>
-
-<option>Tarde</option>
-
-<option>Noite</option>
-
-
-</select>
-
-
-
-</div>
-
-
-
-
-
-
-
-<button type="submit"
-name="acao"
-value="notificar_whatsapp"
-class="btn btn-success fw-bold me-2 mt-3">
-
-
-💬 Enviar Mensagem
-
-
-</button>
-
-
-
-
-
-
-
-<button type="submit"
-name="acao"
-value="notificar_amanha"
-class="btn btn-warning fw-bold me-2 mt-3">
-
-
-🔔 Confirmar Consulta Amanhã
-
-
-</button>
-
-
-
-
-
-<button type="submit"
-name="acao"
-value="concluir_atendimento"
-class="btn btn-primary fw-bold mt-3">
-
-
-✔ Concluir Atendimento
-
-
-</button>
-
-
-
-</div>
-
-
-
-
-</div>
-
-
-
-
-</form>
-
-
-
-</div>
-
-
-
-
-
-
 
 {% if wa_url %}
-
-
 <script>
-
-
-window.onload = function(){
-
-
-window.open(
-"{{ wa_url | safe }}",
-"_blank"
-);
-
-
-
-let url = new URL(window.location.href);
-
-
-url.searchParams.delete("wa_url");
-
-
-
-window.history.replaceState(
-{},
-document.title,
-url
-);
-
-
-
-}
-
-
+    window.onload = function(){
+        window.open("{{ wa_url | safe }}", "_blank");
+        let url = new URL(window.location.href);
+        url.searchParams.delete("wa_url");
+        window.history.replaceState({}, document.title, url);
+    }
 </script>
-
-
-
 {% endif %}
 
-
-
-
-
-
-
 <script>
-
-
-document
-.getElementById("checkAll")
-.addEventListener(
-"change",
-function(){
-
-
-let checks =
-document.querySelectorAll(".pac-check");
-
-
-
-checks.forEach(function(check){
-
-check.checked =
-this.checked;
-
-}, this);
-
-
-
-});
-
-
-
+    document.getElementById("checkAll").addEventListener("change", function(){
+        let checks = document.querySelectorAll(".pac-check");
+        checks.forEach(function(check){
+            check.checked = this.checked;
+        }, this);
+    });
 </script>
 
-
-
 </body>
-
 </html>
