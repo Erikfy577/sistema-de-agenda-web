@@ -3,6 +3,10 @@ from flask import Flask
 
 app = Flask(__name__)
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 # ==============================================================================
 # CONEXÃO COM O BANCO DE DADOS (Disponível para as rotas)
 # ==============================================================================

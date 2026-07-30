@@ -159,11 +159,34 @@
 {% endif %}
 
 <script>
+    // SCRIPT 1: Selecionar todos os checkboxes da tabela
     document.getElementById("checkAll").addEventListener("change", function(){
         let checks = document.querySelectorAll(".pac-check");
         checks.forEach(function(check){
             check.checked = this.checked;
         }, this);
+    });
+
+    // SCRIPT 2: Trava automática de horários por profissional
+    document.addEventListener("DOMContentLoaded", function() {
+        const profAtual = document.querySelector('input[name="prof_atual"]').value;
+        const selectPeriodo = document.querySelector('select[name="periodo"]');
+
+        if (profAtual === "Dra. Jamile") {
+            selectPeriodo.innerHTML = '<option value="Manhã">Manhã</option>';
+            selectPeriodo.style.pointerEvents = "none"; 
+            selectPeriodo.style.backgroundColor = "#e9ecef"; 
+        } 
+        else if (profAtual === "Dra. Laurice" || profAtual === "Dr. Gerlando") {
+            selectPeriodo.innerHTML = '<option value="Noite">Noite</option>';
+            selectPeriodo.style.pointerEvents = "none";
+            selectPeriodo.style.backgroundColor = "#e9ecef";
+        } 
+        else if (profAtual === "Jadson") {
+            selectPeriodo.innerHTML = '<option value="Manhã">Manhã</option><option value="Tarde">Tarde</option>';
+            selectPeriodo.style.pointerEvents = "auto";
+            selectPeriodo.style.backgroundColor = ""; 
+        }
     });
 </script>
 
