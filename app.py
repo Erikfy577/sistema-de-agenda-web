@@ -26,12 +26,15 @@ from routes_cadastro import cadastro_bp
 from routes_espera import espera_bp
 from routes_agenda import agenda_bp
 from routes_dashboard import dashboard_bp
+from routes_laudo import routes_laudo
 
 app.register_blueprint(inicio_bp)
 app.register_blueprint(cadastro_bp)
 app.register_blueprint(espera_bp)
 app.register_blueprint(agenda_bp)
 app.register_blueprint(dashboard_bp)
+app.register_blueprint(routes_laudo)
+
 
 # ==============================================================================
 # INICIALIZAÇÃO DO SERVIDOR (Waitress)
