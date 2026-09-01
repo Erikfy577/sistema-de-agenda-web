@@ -1,20 +1,18 @@
-🏥 Sistema de Agendamento UBS: Transformando a Gestão da Saúde Pública
-Este projeto nasce da necessidade real de otimizar o fluxo de atendimento em Unidades Básicas de Saúde (UBS). Através de uma interface intuitiva e uma lógica de automação inteligente, o sistema resolve um dos maiores gargalos da gestão pública: a organização de filas e a distribuição de vagas para especialistas.
+# Sistema de Agendamento Telessaúde - UBS
 
-✨ Destaques do Projeto
-🚀 Fila Inteligente: Gerenciamento automático de pacientes por ordem de chegada e prioridade, garantindo fluidez no atendimento.
-👨‍⚕️ Múltiplos Especialistas: Listas de espera segmentadas por profissionais , permitindo uma visão clara da demanda de cada consultório.
-⚙️ Automação de Vagas: Sistema dinâmico que converte a fila de espera em agendamentos do dia com base na disponibilidade real da unidade.
-📂 Segurança de Dados: Persistência robusta via banco de dados SQLite, com caminhos dinâmicos e confirmações de exclusão para evitar erros operacionais.
+Sistema web modular desenvolvido para a gestão de agendamentos e integrações do projeto nas Unidades Básicas de Saúde.
 
-🛠 Tecnologia & Arquitetura
-O software foi construído seguindo o padrão MVC (Model-View-Controller) para garantir um código limpo, modular e fácil de escalar.
+## 🚀 Tecnologias Utilizadas
 
-Linguagem: Python 3.
-Interface: Tkinter (Desktop Nativo).
-Banco de Dados: SQLite.
+* **Backend:** Python, Flask
+* **Servidor de Produção:** Waitress (Otimizado para Windows)
+* **Integrações:** Requests, python-dotenv
+* **Infraestrutura/Automação:** Scripts Batch e Agendador de Tarefas do Windows
 
-"A eficiência na recepção é o primeiro passo para um atendimento de saúde digno e organizado."
+## ⚙️ Pré-requisitos
 
-👨‍💻 Desenvolvedor
-Erik Gabriel Duarte de Morais
+* Python 3.x
+* Git
+* Ambiente Windows (para automação do servidor em segundo plano)
+
+## 👨‍💻 Desenvolvedor Erik Gabriel Duarte de Morais
