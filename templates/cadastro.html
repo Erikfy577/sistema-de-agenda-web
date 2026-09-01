@@ -19,7 +19,17 @@
 <body>
     <nav class="navbar navbar-dark">
         <div class="container-fluid">
-            <a class="btn btn-outline-light btn-sm fw-bold" href="/">← Voltar ao Início</a>
+            <div class="d-flex align-items-center">
+                <a class="btn btn-outline-light btn-sm fw-bold" href="/">← Voltar ao Início</a>
+                
+                <!-- Formulário de Upload de CSV -->
+                <form method="POST" action="/injetar_script_bd" enctype="multipart/form-data" class="d-inline ms-3 d-flex gap-2">
+                    <input type="file" name="arquivo_csv" accept=".csv" class="form-control form-control-sm" style="max-width: 250px;" required>
+                    <button type="submit" class="btn btn-outline-warning btn-sm fw-bold" onclick="return confirm('⚠️ Importar pacientes desta planilha para o Banco de Dados?');">
+                        ⚙️ Importar CSV
+                    </button>
+                </form>
+            </div>
             <span class="navbar-text text-white fw-bold">NOVO CADASTRO</span>
         </div>
     </nav>
@@ -78,7 +88,7 @@
         </div>
     </div>
 
-   <!-- Script de Integração e Segurança Make (Envia todos para o Router) -->
+   <!-- Script de Integração e Segurança Make -->
     <script>
         document.getElementById('cadastroForm').addEventListener('submit', async function(e) {
             e.preventDefault(); 
@@ -102,8 +112,8 @@
             };
 
             try {
-                // Envia TUDO para o Make fazer a triagem
-                const response = await fetch('https://hook.us2.make.com/v90f1fet2o1i2hwsk2arkvxssl8zucy8', {
+                // A URL agora é injetada de forma segura pelo backend usando a variável do .env
+                const response = await fetch('{{ webhook_url }}', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
