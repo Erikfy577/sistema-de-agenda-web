@@ -31,7 +31,7 @@
                 <div class="alert alert-success fw-bold text-center">{{ mensagem }}</div>
                 {% endif %}
                 
-                <form method="POST" action="/cadastro">
+                <form id="cadastroForm" method="POST" action="/cadastro">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Nome Completo:</label>
                         <input type="text" name="nome" class="form-control" required>
@@ -71,17 +71,59 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-success w-100 py-2 fw-bold mb-4">Salvar na Fila</button>
+                    <button type="submit" id="btnSubmit" class="btn btn-success w-100 py-2 fw-bold mb-4">Salvar na Fila</button>
                 </form>
-
-                <hr class="text-muted">
-                <div class="text-center mt-3">
-                    <p class="text-muted mb-2 small fw-bold">Deseja baixar o histórico completo do sistema?</p>
-                    <a href="/exportar_pacientes" class="btn btn-outline-info fw-bold w-100">📊 Exportar para Planilha (Excel)</a>
-                </div>
 
             </div>
         </div>
     </div>
+
+   <!-- Script de Integração e Segurança Make (Envia todos para o Router) -->
+    <script>
+        document.getElementById('cadastroForm').addEventListener('submit', async function(e) {
+            e.preventDefault(); 
+
+            const form = e.target;
+            const btn = document.getElementById('btnSubmit');
+            const originalText = btn.innerHTML;
+            
+            // Trava o botão para evitar duplicidade
+            btn.innerHTML = 'Enviando p/ Planilha... <span class="spinner-border spinner-border-sm"></span>';
+            btn.disabled = true;
+
+            // Coleta os dados do formulário
+            const payload = {
+                nome: form.nome.value,
+                telefone: form.telefone.value,
+                profissional: form.profissional.value,
+                prioridade: form.prioridade.value,
+                atendimento_tipo: form.atendimento_tipo.value,
+                status: "Aguardando"
+            };
+
+            try {
+                // Envia TUDO para o Make fazer a triagem
+                const response = await fetch('https://hook.us2.make.com/v90f1fet2o1i2hwsk2arkvxssl8zucy8', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                // Se o Make confirmar o recebimento, salva no sistema local
+                if (response.ok) {
+                    form.submit(); 
+                } else {
+                    alert('Erro de Segurança: O Make não confirmou o registro. A inserção foi cancelada.');
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
+            } catch (error) {
+                console.error('Falha de Comunicação Webhook:', error);
+                alert('Erro na conexão com a automação. Verifique a internet e tente novamente.');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        });
+    </script>
 </body>
 </html>
