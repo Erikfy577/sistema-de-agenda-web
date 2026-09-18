@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Seleção de Acesso - Painel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='estilo.css') }}">
+    <style>
+        body {
+            background-image: url("{{ url_for('static', filename='tela_principal.png') }}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.90);
+            backdrop-filter: blur(5px);
+            border-radius: 15px;
+            transition: transform 0.2s;
+        }
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2) !important;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-dark" style="background-color: rgba(27, 54, 93, 0.9);">
+        <div class="container-fluid py-2 position-relative">
+            <a href="/" class="btn btn-outline-light position-absolute start-0 ms-3">⬅️ Voltar</a>
+            <span class="navbar-brand mb-0 h4 fw-bold text-uppercase mx-auto">Onde você está acessando?</span>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="row justify-content-center text-center">
+            
+            <div class="col-md-3 mb-3">
+                <div class="card shadow h-100 glass-card" style="border-top: 5px solid #2C3E50;">
+                    <div class="card-body py-5">
+                        <h5 class="fw-bold text-secondary mb-4">📺 TV Recepção</h5>
+                        <a href="/painel/tv" class="btn btn-dark w-100 fw-bold">Abrir Visor</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <div class="card shadow h-100 glass-card" style="border-top: 5px solid #F1C40F;">
+                    <div class="card-body py-5">
+                        <h5 class="fw-bold text-secondary mb-4">🩺 Triagem</h5>
+                        <a href="/painel/controle/triagem" class="btn btn-warning text-dark w-100 fw-bold">Acessar Controle</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <div class="card shadow h-100 glass-card" style="border-top: 5px solid #E74C3C;">
+                    <div class="card-body py-5">
+                        <h5 class="fw-bold text-secondary mb-4">🏥 consultório 01</h5>
+                        <a href="/painel/controle/A" class="btn btn-danger w-100 fw-bold">Acessar Controle</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <div class="card shadow h-100 glass-card" style="border-top: 5px solid #3498DB;">
+                    <div class="card-body py-5">
+                        <h5 class="fw-bold text-secondary mb-4">🏨 consultório 02</h5>
+                        <a href="/painel/controle/B" class="btn btn-primary w-100 fw-bold">Acessar Controle</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>

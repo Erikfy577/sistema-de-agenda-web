@@ -1,9 +1,16 @@
 # Ambiente virtual
 .venv/
 
-# Variáveis de ambiente
+# Variaveis de ambiente
 .env
 
 # Cache do Python
 __pycache__/
 *.pyc
+
+# Arquivos locais - NAO enviar para o GitHub
+database/banco.db
+iniciar.bat
+invisivel.vbs
+log_erro.txt
+database/banco_backup.db
