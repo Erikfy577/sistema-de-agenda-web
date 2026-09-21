@@ -3,8 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Controle - {{ sala | capitalize }}</title>
+    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='estilo.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='chamadas.ico') }}">
+
     <style>
         body {
             background-image: url("{{ url_for('static', filename='tela_principal.png') }}");
@@ -12,67 +17,141 @@
             background-position: center;
             background-attachment: fixed;
             background-repeat: no-repeat;
-            height: 100vh;
+            min-height: 100vh;
         }
+
         .glass-card {
-            background: rgba(255, 255, 255, 0.90);
-            backdrop-filter: blur(5px);
-            border-radius: 15px;
-            transition: transform 0.2s;
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(8px);
+            border: none;
+            border-radius: 16px;
         }
+
+        .display-senha {
+            font-size: 4.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: #1b365d;
+            line-height: 1;
+        }
+
         .lista-espera {
-            max-height: 300px;
+            max-height: 320px;
             overflow-y: auto;
+        }
+
+        .btn-warning-custom {
+            background-color: #f39c12;
+            border-color: #f39c12;
+            color: #212529;
+        }
+
+        .btn-warning-custom:hover {
+            background-color: #d68910;
+            border-color: #d68910;
+            color: #fff;
         }
     </style>
 </head>
 <body>
 
-    <nav class="navbar navbar-dark" style="background-color: rgba(27, 54, 93, 0.9);">
-        <div class="container-fluid py-2 position-relative">
-            <a href="/painel" class="btn btn-outline-light position-absolute start-0 ms-3">⬅️ Voltar</a>
-            <span class="navbar-brand mb-0 h4 fw-bold text-uppercase mx-auto">
-                {% if sala == 'triagem' %} 🩺 Controle de Fila - Triagem
-                {% elif sala == 'A' %} 👩‍⚕️ Controle de Fila - A
-                {% elif sala == 'B' %} 👨‍⚕️ Controle de Fila - B
+    <!-- Barra de Navegação -->
+    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm" style="background-color: rgba(27, 54, 93, 0.95);">
+        <div class="container-fluid px-4">
+            <a href="/painel" class="btn btn-outline-light btn-sm fw-semibold d-inline-flex align-items-center gap-1">
+                <i class="bi bi-arrow-left"></i>
+                <span>Voltar</span>
+            </a>
+            <span class="navbar-brand mb-0 h6 fw-bold text-uppercase d-none d-sm-inline-block">
+                {% if sala == 'triagem' %}
+                    <i class="bi bi-heart-pulse-fill me-2 text-warning"></i>Controle de Fila - Triagem
+                {% elif sala == 'A' %}
+                    <i class="bi bi-hospital-fill me-2 text-danger"></i>Controle de Fila - Consultório 01
+                {% elif sala == 'B' %}
+                    <i class="bi bi-hospital-fill me-2 text-primary"></i>Controle de Fila - Consultório 02
+                {% elif sala == 'manual' %}
+                    <i class="bi bi-pencil-square me-2 text-secondary"></i>Chamada manual
                 {% endif %}
             </span>
         </div>
     </nav>
 
-    <div class="container mt-4 text-center">
+    <div class="container my-5 text-center">
         <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card shadow p-4 mx-auto glass-card" style="border-top: 5px solid #2C3E50;">
+            <div class="col-lg-7 col-md-9">
+                <div class="card shadow glass-card p-4 p-md-5" 
+                     style="border-top: 5px solid {% if sala == 'triagem' %}#f39c12{% elif sala == 'A' %}#dc3545{% elif sala == 'B' %}#0d6efd{% else %}#6c757d{% endif %};">
                     
-                    <h1 class="display-1 fw-bold text-dark mb-1" id="senhaAtual">--</h1>
-                    <p class="text-muted mb-4">Última Senha Chamada</p>
-                    
-                    <!-- BOTÕES PRINCIPAIS -->
+                    <span class="text-secondary small fw-bold text-uppercase mb-2 d-block">Última Senha Chamada</span>
+                    <div class="display-senha mb-2" id="senhaAtual">--</div>
+                    <p class="text-muted small mb-4">Aguardando novo acionamento do operador</p>
+
+                    <!-- Chamada de Novas Senhas (Triagem) -->
                     {% if sala == 'triagem' %}
-                        <div class="row g-2 mb-3">
-                            <div class="col-6">
-                                <button onclick="chamarNovaTriagem('A')" class="btn btn-danger w-100 py-3 fw-bold fs-6 shadow">🔔 Nova Senha A </button>
+                        <div class="row g-3 mb-4">
+                            <div class="col-sm-6">
+                                <button onclick="chamarNovaTriagem('A')" class="btn btn-danger w-100 py-3 fw-semibold shadow-sm d-flex align-items-center justify-content-center gap-2">
+                                    <i class="bi bi-bell-fill"></i>
+                                    <span>Nova Senha A</span>
+                                </button>
                             </div>
-                            <div class="col-6">
-                                <button onclick="chamarNovaTriagem('B')" class="btn btn-primary w-100 py-3 fw-bold fs-6 shadow">🔔 Nova Senha B</button>
+                            <div class="col-sm-6">
+                                <button onclick="chamarNovaTriagem('B')" class="btn btn-primary w-100 py-3 fw-semibold shadow-sm d-flex align-items-center justify-content-center gap-2">
+                                    <i class="bi bi-bell-fill"></i>
+                                    <span>Nova Senha B</span>
+                                </button>
+                            </div>
+                        </div>
+                    {% elif sala == 'A' or sala == 'B' %}
+                        <button onclick="chamarProximaMedico()" class="btn btn-link btn-sm text-secondary text-decoration-none opacity-75 mb-4">
+                            <i class="bi bi-skip-forward me-1"></i>
+                            Chamar próxima senha sem triagem
+                        </button>
+                    {% else %}
+                        <div class="text-start mb-3">
+                            <label for="nomeSalaManual" class="form-label small fw-bold text-secondary">Nome da sala</label>
+                            <input id="nomeSalaManual" type="text" class="form-control" maxlength="80" placeholder="Ex.: Sala de procedimentos">
+                        </div>
+                        <div class="row g-3 mb-4">
+                            <div class="col-sm-6">
+                                <button onclick="chamarManual('A')" class="btn btn-outline-danger w-100 py-3 fw-semibold d-flex align-items-center justify-content-center gap-2">
+                                    <i class="bi bi-bell-fill"></i>
+                                    <span>Nova senha A</span>
+                                </button>
+                            </div>
+                            <div class="col-sm-6">
+                                <button onclick="chamarManual('B')" class="btn btn-outline-primary w-100 py-3 fw-semibold d-flex align-items-center justify-content-center gap-2">
+                                    <i class="bi bi-bell-fill"></i>
+                                    <span>Nova senha B</span>
+                                </button>
                             </div>
                         </div>
                     {% endif %}
-                    
-                    <!-- HISTÓRICO PARA TODOS (TRIAGEM E MÉDICOS) -->
-                    <h5 class="text-start mt-3 mb-2 border-bottom pb-2 text-secondary fw-bold">📋 Pacientes no Histórico</h5>
-                    <div class="lista-espera text-start">
-                        <ul class="list-group" id="listaPacientes">
-                            <li class="list-group-item text-center text-muted py-3">Carregando lista...</li>
-                        </ul>
+
+                    <!-- Lista de Histórico de Pacientes -->
+                    <div class="text-start mt-2">
+                        <div class="d-flex align-items-center justify-content-between border-bottom pb-2 mb-3">
+                            <span class="fw-bold text-secondary d-flex align-items-center gap-2">
+                                <i class="bi bi-clock-history"></i>
+                                <span>Pacientes no Histórico</span>
+                            </span>
+                        </div>
+
+                        <div class="lista-espera">
+                            <ul class="list-group list-group-flush" id="listaPacientes">
+                                <li class="list-group-item text-center text-muted py-4 border-0">
+                                    <div class="spinner-border spinner-border-sm text-secondary me-2"></div>Carregando lista...
+                                </li>
+                            </ul>
+                        </div>
                     </div>
-                    
+
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- WebSockets e Lógica do Painel -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
     <script>
         const socket = io();
@@ -81,24 +160,43 @@
         socket.on('connect', () => { socket.emit('pedir_listas'); });
 
         function chamarNovaTriagem(fila) { socket.emit('chamar_nova_triagem', { fila: fila }); }
+        function nomeSalaManual() { return document.getElementById('nomeSalaManual').value.trim(); }
+        function chamarManual(fila) {
+            const nomeSala = nomeSalaManual();
+            if (!nomeSala) {
+                alert('Informe o nome da sala antes de chamar.');
+                return;
+            }
+            socket.emit('chamar_manual', { fila: fila, nome_sala: nomeSala });
+        }
+        function chamarSenhaManual(senha) {
+            const nomeSala = nomeSalaManual();
+            if (!nomeSala) {
+                alert('Informe o nome da sala antes de chamar.');
+                return;
+            }
+            socket.emit('chamar_senha_manual', { senha: senha, nome_sala: nomeSala });
+        }
+        function chamarProximaMedico() {
+            if (confirm('Chamar uma nova senha diretamente neste consultório?')) {
+                socket.emit('chamar_proxima_medico', { sala: salaAtual });
+            }
+        }
         function chamarMedico(senha) { socket.emit('chamar_medico', { senha: senha, sala: salaAtual }); }
         function rechamarSenha(senha) { socket.emit('rechamar_senha', { senha: senha, sala: salaAtual }); }
 
         socket.on('nova_chamada', function(dados) {
-            if (dados.sala_origem === salaAtual) {
+            if (dados.sala_origem === salaAtual || (salaAtual === 'manual' && dados.sala_origem === 'manual' && dados.sala_nome === nomeSalaManual())) {
                 document.getElementById('senhaAtual').innerText = dados.senha;
             }
         });
 
-        // Atualiza as tabelas para Triagem e Médicos
         socket.on('atualizar_listas', function(filas_medicos) {
             const listaUl = document.getElementById('listaPacientes');
             listaUl.innerHTML = ''; 
             
             let pacientes = [];
-            
-            // A Triagem vê os dois fluxos misturados no histórico
-            if (salaAtual === 'triagem') {
+            if (salaAtual === 'triagem' || salaAtual === 'manual') {
                 pacientes = [...filas_medicos['A'], ...filas_medicos['B']];
             } else {
                 const fila = (salaAtual === 'A') ? 'A' : 'B';
@@ -106,28 +204,43 @@
             }
             
             if (pacientes.length === 0) {
-                listaUl.innerHTML = '<li class="list-group-item text-center text-muted py-3">Nenhum paciente no histórico.</li>';
+                listaUl.innerHTML = '<li class="list-group-item text-center text-muted py-4 border-0">Nenhum paciente no histórico.</li>';
             } else {
                 pacientes.forEach(senha => {
                     const li = document.createElement('li');
-                    li.className = "list-group-item d-flex justify-content-between align-items-center mb-1 shadow-sm rounded border";
+                    li.className = "list-group-item d-flex justify-content-between align-items-center mb-2 px-3 py-2 bg-light rounded border-0 shadow-sm";
                     
                     let botoesHTML = '';
-                    
                     if (salaAtual === 'triagem') {
-                        // Triagem só rechama
-                        botoesHTML = `<button onclick="rechamarSenha('${senha}')" class="btn btn-warning fw-bold text-dark btn-sm px-3">🔁 Rechamar Triagem</button>`;
+                        botoesHTML = `
+                            <button onclick="rechamarSenha('${senha}')" class="btn btn-warning-custom btn-sm fw-semibold d-inline-flex align-items-center gap-1 px-3">
+                                <i class="bi bi-arrow-clockwise"></i>
+                                <span>Rechamar</span>
+                            </button>
+                        `;
+                    } else if (salaAtual === 'manual') {
+                        botoesHTML = `
+                            <button onclick="chamarSenhaManual('${senha}')" class="btn btn-outline-secondary btn-sm fw-semibold d-inline-flex align-items-center gap-1 px-3">
+                                <i class="bi bi-megaphone-fill"></i>
+                                <span>Chamar</span>
+                            </button>
+                        `;
                     } else {
-                        // Médicos chamam e rechamam
                         const corBotao = (salaAtual === 'A') ? 'btn-danger' : 'btn-primary';
                         botoesHTML = `
-                            <button onclick="chamarMedico('${senha}')" class="btn ${corBotao} fw-bold btn-sm me-2 px-3">▶️ Chamar</button>
-                            <button onclick="rechamarSenha('${senha}')" class="btn btn-warning fw-bold text-dark btn-sm px-2">🔁 Rechamar</button>
+                            <button onclick="chamarMedico('${senha}')" class="btn ${corBotao} btn-sm fw-semibold d-inline-flex align-items-center gap-1 me-1 px-3">
+                                <i class="bi bi-megaphone-fill"></i>
+                                <span>Chamar</span>
+                            </button>
+                            <button onclick="rechamarSenha('${senha}')" class="btn btn-warning-custom btn-sm fw-semibold d-inline-flex align-items-center gap-1 px-2">
+                                <i class="bi bi-arrow-clockwise"></i>
+                                <span>Rechamar</span>
+                            </button>
                         `;
                     }
                     
                     li.innerHTML = `
-                        <span class="fs-5 fw-bold text-dark ms-2">${senha}</span>
+                        <span class="fs-5 fw-bold text-dark">${senha}</span>
                         <div>${botoesHTML}</div>
                     `;
                     listaUl.appendChild(li);

@@ -68,6 +68,54 @@ def chamar_nova_triagem(dados):
     emit('atualizar_listas', filas_painel, broadcast=True)
 
 
+@socketio.on('chamar_proxima_medico')
+def chamar_proxima_medico(dados):
+    sala = dados.get('sala')
+    if sala not in ('A', 'B'):
+        return
+
+    sequencias_painel[sala] += 1
+    numero = f'{sequencias_painel[sala]:02d}'
+    senha = numero if sala == 'A' else f'B{numero}'
+
+    emit('nova_chamada', {'senha': senha, 'sala_origem': sala}, broadcast=True)
+
+
+@socketio.on('chamar_manual')
+def chamar_manual(dados):
+    fila = dados.get('fila')
+    nome_sala = str(dados.get('nome_sala', '')).strip()[:80]
+    if fila not in ('A', 'B') or not nome_sala:
+        return
+
+    sequencias_painel[fila] += 1
+    numero = f'{sequencias_painel[fila]:02d}'
+    senha = numero if fila == 'A' else f'B{numero}'
+
+    emit('nova_chamada', {
+        'senha': senha,
+        'sala_origem': 'manual',
+        'sala_nome': nome_sala,
+    }, broadcast=True)
+
+
+@socketio.on('chamar_senha_manual')
+def chamar_senha_manual(dados):
+    senha = dados.get('senha')
+    nome_sala = str(dados.get('nome_sala', '')).strip()[:80]
+    fila = 'B' if str(senha).startswith('B') else 'A'
+    if not nome_sala or senha not in filas_painel[fila]:
+        return
+
+    filas_painel[fila].remove(senha)
+    emit('nova_chamada', {
+        'senha': senha,
+        'sala_origem': 'manual',
+        'sala_nome': nome_sala,
+    }, broadcast=True)
+    emit('atualizar_listas', filas_painel, broadcast=True)
+
+
 @socketio.on('chamar_medico')
 def chamar_medico(dados):
     senha = dados.get('senha')

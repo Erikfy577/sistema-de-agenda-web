@@ -2,9 +2,14 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Seleção de Acesso - Painel</title>
+    <title>Seleção de Acesso - Painel de Chamadas</title>
+    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='estilo.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='chamadas.ico') }}">
+
     <style>
         body {
             background-image: url("{{ url_for('static', filename='tela_principal.png') }}");
@@ -12,63 +17,150 @@
             background-position: center;
             background-attachment: fixed;
             background-repeat: no-repeat;
+            min-height: 100vh;
         }
+
         .glass-card {
-            background: rgba(255, 255, 255, 0.90);
-            backdrop-filter: blur(5px);
-            border-radius: 15px;
-            transition: transform 0.2s;
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(8px);
+            border: none;
+            border-radius: 16px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
+
         .glass-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2) !important;
+            transform: translateY(-6px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15) !important;
+        }
+
+        .icon-circle {
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.55rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .btn-warning-custom {
+            background-color: #f39c12;
+            border-color: #f39c12;
+            color: #212529;
+        }
+
+        .btn-warning-custom:hover {
+            background-color: #d68910;
+            border-color: #d68910;
+            color: #fff;
         }
     </style>
 </head>
 <body>
 
-    <nav class="navbar navbar-dark" style="background-color: rgba(27, 54, 93, 0.9);">
-        <div class="container-fluid py-2 position-relative">
-            <a href="/" class="btn btn-outline-light position-absolute start-0 ms-3">⬅️ Voltar</a>
-            <span class="navbar-brand mb-0 h4 fw-bold text-uppercase mx-auto">Onde você está acessando?</span>
+    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm" style="background-color: rgba(27, 54, 93, 0.95);">
+        <div class="container-fluid px-4">
+            <a class="btn btn-outline-light btn-sm fw-semibold d-inline-flex align-items-center gap-1" href="/">
+                <i class="bi bi-arrow-left"></i>
+                <span>Voltar ao Menu</span>
+            </a>
+            <span class="navbar-brand mb-0 h6 fw-bold text-uppercase d-none d-sm-inline-block">
+                <i class="bi bi-display me-2"></i>Onde você está acessando?
+            </span>
         </div>
     </nav>
 
-    <div class="container mt-5">
-        <div class="row justify-content-center text-center">
-            
-            <div class="col-md-3 mb-3">
-                <div class="card shadow h-100 glass-card" style="border-top: 5px solid #2C3E50;">
-                    <div class="card-body py-5">
-                        <h5 class="fw-bold text-secondary mb-4">📺 TV Recepção</h5>
-                        <a href="/painel/tv" class="btn btn-dark w-100 fw-bold">Abrir Visor</a>
+    <div class="container my-5">
+        <div class="row justify-content-center g-4 text-center">
+
+            <!-- TV Recepção -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card shadow-sm h-100 glass-card" style="border-top: 5px solid #2C3E50;">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <div class="icon-circle mx-auto" style="background-color: #eaeded; color: #2C3E50;">
+                            <i class="bi bi-tv-fill"></i>
+                        </div>
+                        <h5 class="card-title fw-bold text-dark mb-1">TV Recepção</h5>
+                        <p class="text-muted small flex-grow-1">Exibição pública de senhas e chamadas.</p>
+                        <div class="d-flex gap-2 mt-auto">
+                            <a href="/painel/tv" class="btn btn-dark w-100 py-2 fw-semibold d-inline-flex align-items-center justify-content-center gap-1">
+                                <i class="bi bi-play-fill"></i>
+                                <span>Abrir</span>
+                            </a>
+                            <a href="/painel/tv/fechar" class="btn btn-outline-danger w-100 py-2 fw-semibold d-inline-flex align-items-center justify-content-center gap-1" title="Encerrar visualização da TV">
+                                <i class="bi bi-stop-fill"></i>
+                                <span>Fechar</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-3 mb-3">
-                <div class="card shadow h-100 glass-card" style="border-top: 5px solid #F1C40F;">
-                    <div class="card-body py-5">
-                        <h5 class="fw-bold text-secondary mb-4">🩺 Triagem</h5>
-                        <a href="/painel/controle/triagem" class="btn btn-warning text-dark w-100 fw-bold">Acessar Controle</a>
+            <!-- Triagem -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card shadow-sm h-100 glass-card" style="border-top: 5px solid #F39C12;">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <div class="icon-circle mx-auto" style="background-color: #fef5e7; color: #F39C12;">
+                            <i class="bi bi-heart-pulse-fill"></i>
+                        </div>
+                        <h5 class="card-title fw-bold text-dark mb-1">Triagem</h5>
+                        <p class="text-muted small flex-grow-1">Aferição de sinais vitais e pré-consulta.</p>
+                        <a href="/painel/controle/triagem" class="btn btn-warning-custom w-100 py-2 fw-semibold mt-auto d-inline-flex align-items-center justify-content-center gap-1">
+                            <i class="bi bi-box-arrow-in-right"></i>
+                            <span>Acessar Controle</span>
+                        </a>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-3 mb-3">
-                <div class="card shadow h-100 glass-card" style="border-top: 5px solid #E74C3C;">
-                    <div class="card-body py-5">
-                        <h5 class="fw-bold text-secondary mb-4">🏥 consultório 01</h5>
-                        <a href="/painel/controle/A" class="btn btn-danger w-100 fw-bold">Acessar Controle</a>
+            <!-- Consultório 01 -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card shadow-sm h-100 glass-card" style="border-top: 5px solid #E74C3C;">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <div class="icon-circle mx-auto" style="background-color: #fdedec; color: #E74C3C;">
+                            <i class="bi bi-hospital-fill"></i>
+                        </div>
+                        <h5 class="card-title fw-bold text-dark mb-1">Consultório 01</h5>
+                        <p class="text-muted small flex-grow-1">Painel de atendimento e chamadas da sala 1.</p>
+                        <a href="/painel/controle/A" class="btn btn-danger w-100 py-2 fw-semibold mt-auto d-inline-flex align-items-center justify-content-center gap-1">
+                            <i class="bi bi-box-arrow-in-right"></i>
+                            <span>Acessar Controle</span>
+                        </a>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-3 mb-3">
-                <div class="card shadow h-100 glass-card" style="border-top: 5px solid #3498DB;">
-                    <div class="card-body py-5">
-                        <h5 class="fw-bold text-secondary mb-4">🏨 consultório 02</h5>
-                        <a href="/painel/controle/B" class="btn btn-primary w-100 fw-bold">Acessar Controle</a>
+            <!-- Consultório 02 -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card shadow-sm h-100 glass-card" style="border-top: 5px solid #3498DB;">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <div class="icon-circle mx-auto" style="background-color: #ebf5fb; color: #3498DB;">
+                            <i class="bi bi-hospital-fill"></i>
+                        </div>
+                        <h5 class="card-title fw-bold text-dark mb-1">Consultório 02</h5>
+                        <p class="text-muted small flex-grow-1">Painel de atendimento e chamadas da sala 2.</p>
+                        <a href="/painel/controle/B" class="btn btn-primary w-100 py-2 fw-semibold mt-auto d-inline-flex align-items-center justify-content-center gap-1">
+                            <i class="bi bi-box-arrow-in-right"></i>
+                            <span>Acessar Controle</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chamada manual -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card shadow-sm h-100 glass-card" style="border-top: 5px solid #6c757d;">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <div class="icon-circle mx-auto" style="background-color: #f1f3f5; color: #6c757d;">
+                            <i class="bi bi-pencil-square"></i>
+                        </div>
+                        <h5 class="card-title fw-bold text-dark mb-1">Chamada manual</h5>
+                        <p class="text-muted small flex-grow-1">Informe a sala e chame senhas A ou B.</p>
+                        <a href="/painel/controle/manual" class="btn btn-outline-secondary w-100 py-2 fw-semibold mt-auto d-inline-flex align-items-center justify-content-center gap-1">
+                            <i class="bi bi-box-arrow-in-right"></i>
+                            <span>Acessar Controle</span>
+                        </a>
                     </div>
                 </div>
             </div>

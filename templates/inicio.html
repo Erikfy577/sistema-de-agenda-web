@@ -2,106 +2,148 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Menu Principal - Agenda</title>
+    <title>Menu Principal - Sistema UBS</title>
+    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='estilo.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='icone.ico') }}" type="image/x-icon">
+    
     <style>
-        /* Configuração da Imagem de Fundo */
         body {
             background-image: url("{{ url_for('static', filename='tela_principal.png') }}");
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             background-repeat: no-repeat;
+            min-height: 100vh;
         }
-        
-        /* Efeito de transparência nos cartões (Glassmorphism) */
+
         .glass-card {
-            background: rgba(255, 255, 255, 0.90);
-            backdrop-filter: blur(5px);
-            border-radius: 15px;
-            transition: transform 0.2s; /* Animação suave */
+            background: rgba(255, 255, 255, 0.93);
+            backdrop-filter: blur(8px);
+            border: none;
+            border-radius: 16px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-        
-        /* Efeito de flutuar ao passar o mouse */
+
         .glass-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2) !important;
+            transform: translateY(-6px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15) !important;
+        }
+
+        .icon-circle {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .btn-warning-custom {
+            background-color: #f39c12;
+            border-color: #f39c12;
+            color: #212529;
+        }
+
+        .btn-warning-custom:hover {
+            background-color: #d68910;
+            border-color: #d68910;
+            color: #fff;
         }
     </style>
 </head>
 <body>
 
-    <nav class="navbar navbar-dark" style="background-color: rgba(27, 54, 93, 0.9);">
-        <div class="container-fluid justify-content-center py-2">
-            <span class="navbar-brand mb-0 h4 fw-bold text-uppercase">Sistema de Agendamento UBS</span>
+    <!-- Barra de Navegação -->
+    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm" style="background-color: rgba(27, 54, 93, 0.95);">
+        <div class="container-fluid px-4">
+            <span class="navbar-brand mb-0 h5 fw-bold text-uppercase">
+                <i class="bi bi-hospital me-2"></i>Sistema de Agendamento UBS
+            </span>
+            
+            <!-- Botão sutil para o Painel de Chamadas da Recepção -->
+            <a href="/painel" class="btn btn-outline-light btn-sm fw-semibold d-inline-flex align-items-center gap-2" title="Abrir tela de chamada da TV">
+                <i class="bi bi-tv"></i>
+                <span>Painel TV</span>
+            </a>
         </div>
     </nav>
 
-    <div class="container mt-5">
-        <div class="row justify-content-center text-center">
-            
-            <div class="col-md-4 mb-4">
-                <div class="card shadow h-100 glass-card" style="border-top: 5px solid #18BC9C;">
-                    <div class="card-body py-5">
-                        <h4 class="card-title fw-bold text-secondary mb-3">📝 Novo Cadastro</h4>
-                        <p class="text-muted mb-4">Adicionar um novo paciente à fila de espera.</p>
-                        <a href="/cadastro" class="btn btn-success w-100 py-2 fw-bold">Acessar</a>
+    <!-- Cards de Operação Principal -->
+    <div class="container my-5">
+        <div class="row justify-content-center g-4 text-center">
+
+            <!-- Novo Cadastro -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card shadow-sm h-100 glass-card" style="border-top: 5px solid #18BC9C;">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <div class="icon-circle mx-auto" style="background-color: #e8f8f5; color: #18BC9C;">
+                            <i class="bi bi-person-plus-fill"></i>
+                        </div>
+                        <h5 class="card-title fw-bold text-dark mb-2">Novo Cadastro</h5>
+                        <p class="text-muted small flex-grow-1">Adicionar um novo paciente à fila de espera.</p>
+                        <a href="/cadastro" class="btn btn-success w-100 py-2 fw-semibold">Acessar</a>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-4 mb-4">
-                <div class="card shadow h-100 glass-card" style="border-top: 5px solid #F39C12;">
-                    <div class="card-body py-5">
-                        <h4 class="card-title fw-bold text-secondary mb-3">⏳ Fila de Espera</h4>
-                        <p class="text-muted mb-4">Gerenciar pacientes que aguardam uma data.</p>
-                        <a href="/espera" class="btn btn-warning text-dark w-100 py-2 fw-bold">Acessar</a>
+            <!-- Fila de Espera -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card shadow-sm h-100 glass-card" style="border-top: 5px solid #F39C12;">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <div class="icon-circle mx-auto" style="background-color: #fef5e7; color: #F39C12;">
+                            <i class="bi bi-hourglass-split"></i>
+                        </div>
+                        <h5 class="card-title fw-bold text-dark mb-2">Fila de Espera</h5>
+                        <p class="text-muted small flex-grow-1">Gerenciar pacientes que aguardam uma data.</p>
+                        <a href="/espera" class="btn btn-warning-custom w-100 py-2 fw-semibold">Acessar</a>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-4 mb-4">
-                <div class="card shadow h-100 glass-card" style="border-top: 5px solid #3498DB;">
-                    <div class="card-body py-5">
-                        <h4 class="card-title fw-bold text-secondary mb-3">🗓️ Agenda do Dia</h4>
-                        <p class="text-muted mb-4">Visualizar consultas e enviar avisos automáticos.</p>
-                        <a href="/agenda" class="btn btn-primary w-100 py-2 fw-bold">Acessar</a>
+            <!-- Agenda do Dia -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card shadow-sm h-100 glass-card" style="border-top: 5px solid #3498DB;">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <div class="icon-circle mx-auto" style="background-color: #ebf5fb; color: #3498DB;">
+                            <i class="bi bi-calendar3"></i>
+                        </div>
+                        <h5 class="card-title fw-bold text-dark mb-2">Agenda do Dia</h5>
+                        <p class="text-muted small flex-grow-1">Visualizar consultas e enviar avisos automáticos.</p>
+                        <a href="/agenda" class="btn btn-primary w-100 py-2 fw-semibold">Acessar</a>
                     </div>
                 </div>
             </div>
 
-        </div>
-
-        <div class="row justify-content-center text-center">
-            
-            <div class="col-md-4 mb-4">
-                <div class="card shadow h-100 glass-card" style="border-top: 5px solid #9B59B6;">
-                    <div class="card-body py-5">
-                        <h4 class="card-title fw-bold text-secondary mb-3">📊 Dashboard</h4>
-                        <p class="text-muted mb-4">Visualizar métricas e gráficos de atendimento.</p>
-                        <a href="/dashboard" class="btn text-white w-100 py-2 fw-bold" style="background-color: #9B59B6;">Acessar</a>
+            <!-- Dashboard -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card shadow-sm h-100 glass-card" style="border-top: 5px solid #9B59B6;">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <div class="icon-circle mx-auto" style="background-color: #f4ecf7; color: #9B59B6;">
+                            <i class="bi bi-bar-chart-line-fill"></i>
+                        </div>
+                        <h5 class="card-title fw-bold text-dark mb-2">Dashboard</h5>
+                        <p class="text-muted small flex-grow-1">Visualizar métricas e relatórios de atendimento.</p>
+                        <a href="/dashboard" class="btn text-white w-100 py-2 fw-semibold" style="background-color: #9B59B6;">Acessar</a>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-4 mb-4">
-                <div class="card shadow h-100 glass-card" style="border-top: 5px solid #E74C3C;">
-                    <div class="card-body py-5">
-                        <h4 class="card-title fw-bold text-secondary mb-3">🩸 Laudo Rápido</h4>
-                        <p class="text-muted mb-4">Gerar impressão de testes rápidos para pacientes.</p>
-                        <a href="/laudo" class="btn text-white w-100 py-2 fw-bold" style="background-color: #E74C3C;">Acessar</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-4 mb-4">
-                <div class="card shadow h-100 glass-card" style="border-top: 5px solid #00197d;">
-                    <div class="card-body py-5">
-                        <h4 class="card-title fw-bold text-secondary mb-3">📺 Painel de Chamadas</h4>
-                        <p class="text-muted mb-4">Controle o visor da recepção e faça a chamada dos próximos pacientes.</p>
-                        <a href="/painel" class="btn text-white w-100 py-2 fw-bold" style="background-color: #00197d;">Acessar Painel</a>
+            <!-- Laudo Rápido -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card shadow-sm h-100 glass-card" style="border-top: 5px solid #E74C3C;">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <div class="icon-circle mx-auto" style="background-color: #fdedec; color: #E74C3C;">
+                            <i class="bi bi-droplet-fill"></i>
+                        </div>
+                        <h5 class="card-title fw-bold text-dark mb-2">Laudo Rápido</h5>
+                        <p class="text-muted small flex-grow-1">Gerar impressão de testes rápidos para pacientes.</p>
+                        <a href="/laudo" class="btn text-white w-100 py-2 fw-semibold" style="background-color: #E74C3C;">Acessar</a>
                     </div>
                 </div>
             </div>

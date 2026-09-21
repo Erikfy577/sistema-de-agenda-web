@@ -2,8 +2,11 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Agenda do Dia</title>
+    <title>Agenda do Dia - Sistema UBS</title>
+    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='estilo.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='icone.ico') }}" type="image/x-icon">
 
@@ -14,130 +17,207 @@
             background-position: center;
             background-attachment: fixed;
             background-repeat: no-repeat;
+            min-height: 100vh;
         }
 
-        .bg-white {
-            background-color: rgba(255,255,255,0.95)!important;
+        .glass-card {
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(8px);
+            border: none;
+            border-radius: 14px;
         }
 
-        .navbar-custom {
-            background-color: rgba(27,54,93,0.90);
+        .table-custom-header th {
+            background-color: #1b365d !important;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 0.88rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 12px 14px;
+        }
+
+        .table-custom-body td {
+            padding: 12px 14px;
+            vertical-align: middle;
+            font-size: 0.92rem;
+        }
+
+        .btn-warning-custom {
+            background-color: #f39c12;
+            border-color: #f39c12;
+            color: #212529;
+        }
+
+        .btn-warning-custom:hover {
+            background-color: #d68910;
+            border-color: #d68910;
+            color: #fff;
         }
     </style>
 </head>
 
 <body>
 
-<nav class="navbar navbar-dark navbar-custom">
-    <div class="container-fluid">
-        <a class="btn btn-outline-light btn-sm fw-bold" href="/">← Menu Principal</a>
-        <span class="navbar-text text-white fw-bold">AGENDA DO DIA E AUTOMAÇÃO</span>
+<!-- Barra de Navegação -->
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm" style="background-color: rgba(27, 54, 93, 0.95);">
+    <div class="container-fluid px-4">
+        <a class="btn btn-outline-light btn-sm fw-semibold d-inline-flex align-items-center gap-1" href="/">
+            <i class="bi bi-arrow-left"></i>
+            <span>Menu Principal</span>
+        </a>
+        <span class="navbar-brand mb-0 h6 fw-bold text-uppercase d-none d-sm-inline-block">
+            <i class="bi bi-calendar-check me-2"></i>Agenda do Dia e Automação
+        </span>
     </div>
 </nav>
 
-<div class="container mt-4">
+<div class="container my-4">
 
-    <form method="GET" action="/agenda" class="row g-3 bg-white p-3 shadow-sm rounded mb-4 align-items-end">
-        <div class="col-md-4">
-            <label class="form-label fw-bold">Profissional:</label>
-            <select name="profissional" class="form-select">
-                <option {% if prof_atual == 'Dra. Jamile' %}selected{% endif %}>Dra. Jamile</option>
-                <option {% if prof_atual == 'Dra. Laurice' %}selected{% endif %}>Dra. Laurice</option>
-                <option {% if prof_atual == 'Dr. Gerlando' %}selected{% endif %}>Dr. Gerlando</option>
-                <option {% if prof_atual == 'Jadson' %}selected{% endif %}>Jadson</option>
-            </select>
-        </div>
+    <!-- Filtro de Busca -->
+    <form method="GET" action="/agenda" class="glass-card shadow-sm p-4 mb-4" style="border-top: 5px solid #3498DB;">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-5">
+                <label class="form-label fw-semibold text-secondary small mb-1">
+                    <i class="bi bi-person-badge me-1"></i>Profissional:
+                </label>
+                <select name="profissional" class="form-select">
+                    <option {% if prof_atual == 'Dra. Jamile' %}selected{% endif %}>Dra. Jamile</option>
+                    <option {% if prof_atual == 'Dra. Laurice' %}selected{% endif %}>Dra. Laurice</option>
+                    <option {% if prof_atual == 'Dr. Gerlando' %}selected{% endif %}>Dr. Gerlando</option>
+                    <option {% if prof_atual == 'Jadson' %}selected{% endif %}>Jadson</option>
+                </select>
+            </div>
 
-        <div class="col-md-4">
-            <label class="form-label fw-bold">Data das Consultas:</label>
-            <input type="date" name="data" class="form-control" value="{{ data_atual }}" required>
-        </div>
+            <div class="col-md-4">
+                <label class="form-label fw-semibold text-secondary small mb-1">
+                    <i class="bi bi-calendar-event me-1"></i>Data das Consultas:
+                </label>
+                <input type="date" name="data" class="form-control" value="{{ data_atual }}" required>
+            </div>
 
-        <div class="col-md-4">
-            <button type="submit" class="btn btn-primary w-100 fw-bold">Buscar Agenda</button>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100 fw-semibold d-flex align-items-center justify-content-center gap-2">
+                    <i class="bi bi-search"></i>
+                    <span>Buscar Agenda</span>
+                </button>
+            </div>
         </div>
     </form>
 
-
+    <!-- Tabela e Ações -->
     <form method="POST" action="/acoes_agenda">
         <input type="hidden" name="prof_atual" value="{{ prof_atual }}">
         <input type="hidden" name="data_consulta" value="{{ data_atual }}">
 
-        <div class="bg-white shadow-sm rounded overflow-auto p-3">
-            <table class="table table-striped align-middle">
-                <thead class="table-dark">
-                    <tr>
-                        <th style="width:40px"><input class="form-check-input" type="checkbox" id="checkAll"></th>
-                        <th>ID</th>
-                        <th>Paciente</th>
-                        <th>Telefone</th>
-                        <th>Prioridade</th>
-                        <th>Tipo</th>
-                        <th>Aviso WhatsApp</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for pac in pacientes %}
-                    <tr>
-                        <td>
-                            <input class="form-check-input pac-check" type="checkbox" name="pacientes_ids" value="{{ pac[0] }}">
-                        </td>
-                        <td>{{ pac[0] }}</td>
-                        <td class="fw-bold">{{ pac[1] }}</td>
-                        <td>{{ pac[2] }}</td>
-                        <td>
-                            {% if pac[3] == 'Urgente' %}
-                                <span class="badge bg-danger">{{ pac[3] }}</span>
-                            {% elif pac[3] == 'Prioritário' %}
-                                <span class="badge bg-warning text-dark">{{ pac[3] }}</span>
-                            {% else %}
-                                <span class="badge bg-secondary">{{ pac[3] }}</span>
-                            {% endif %}
-                        </td>
-                        <td>{{ pac[4] }}</td>
-                        <td>
-                            {% if pac[5] == 'Enviado' %}
-                                <span class="text-success fw-bold">✅ Enviado</span>
-                            {% else %}
-                                <span class="text-muted">⏳ Pendente</span>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div class="glass-card shadow-sm overflow-hidden mb-4">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-custom-header">
+                        <tr>
+                            <th style="width: 45px;" class="text-center">
+                                <input class="form-check-input" type="checkbox" id="checkAll">
+                            </th>
+                            <th style="width: 70px;">ID</th>
+                            <th>Paciente</th>
+                            <th>Telefone</th>
+                            <th>Prioridade</th>
+                            <th>Tipo</th>
+                            <th>Aviso WhatsApp</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-custom-body">
+                        {% for pac in pacientes %}
+                        <tr>
+                            <td class="text-center">
+                                <input class="form-check-input pac-check" type="checkbox" name="pacientes_ids" value="{{ pac[0] }}">
+                            </td>
+                            <td class="text-muted fw-semibold">#{{ pac[0] }}</td>
+                            <td class="fw-bold text-dark">{{ pac[1] }}</td>
+                            <td>
+                                <span class="badge bg-light text-secondary border">
+                                    <i class="bi bi-telephone me-1"></i>{{ pac[2] }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if pac[3] == 'Urgente' %}
+                                    <span class="badge rounded-pill bg-danger px-3 py-1">Urgente</span>
+                                {% elif pac[3] == 'Prioritário' %}
+                                    <span class="badge rounded-pill bg-warning text-dark px-3 py-1">Prioritário</span>
+                                {% else %}
+                                    <span class="badge rounded-pill bg-secondary px-3 py-1">{{ pac[3] }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-dark border">{{ pac[4] }}</span>
+                            </td>
+                            <td>
+                                {% if pac[5] == 'Enviado' %}
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">
+                                        <i class="bi bi-check2-all me-1"></i>Enviado
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-light text-muted border px-2 py-1">
+                                        <i class="bi bi-clock me-1"></i>Pendente
+                                    </span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center py-5 text-muted">
+                                <i class="bi bi-calendar-x fs-2 d-block mb-2 text-secondary"></i>
+                                Nenhum agendamento encontrado para esta data e profissional.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        <div class="mt-4 bg-white p-3 shadow-sm rounded">
-            <div class="d-flex flex-wrap align-items-end gap-2">
+        <!-- Painel de Operações em Lote -->
+        <div class="glass-card shadow-sm p-3">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
                 
-                <div class="me-3">
-                    <label class="form-label fw-bold mb-0 text-muted">Período:</label>
-                    <select name="periodo" class="form-select border-info fw-bold">
-                        <option>Manhã</option>
-                        <option>Tarde</option>
-                        <option>Noite</option>
-                    </select>
+                <div class="d-flex flex-wrap align-items-center gap-2">
+                    <div class="d-flex align-items-center gap-2 me-2">
+                        <label class="form-label fw-semibold text-secondary small mb-0">Período:</label>
+                        <select name="periodo" class="form-select form-select-sm fw-semibold" style="width: 120px;">
+                            <option>Manhã</option>
+                            <option>Tarde</option>
+                            <option>Noite</option>
+                        </select>
+                    </div>
+
+                    <div class="bg-primary text-white rounded d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 42px; height: 42px;" title="Total de pacientes agendados">
+                        {{ pacientes|length }}
+                    </div>
+
+                    <button type="submit" name="acao" value="notificar_whatsapp" class="btn btn-success btn-sm fw-semibold d-inline-flex align-items-center gap-1 px-3">
+                        <i class="bi bi-whatsapp"></i>
+                        <span>Enviar Mensagem</span>
+                    </button>
+
+                    <button type="submit" name="acao" value="notificar_amanha" class="btn btn-warning-custom btn-sm fw-semibold d-inline-flex align-items-center gap-1 px-3">
+                        <i class="bi bi-bell"></i>
+                        <span>Confirmar Amanhã</span>
+                    </button>
+
+                    <button type="submit" name="acao" value="atendido" class="btn btn-primary btn-sm fw-semibold d-inline-flex align-items-center gap-1 px-3" onclick="return confirm('Marcar os pacientes selecionados como ATENDIDOS?');">
+                        <i class="bi bi-check-lg"></i>
+                        <span>Atendido</span>
+                    </button>
+
+                    <button type="submit" name="acao" value="falta" class="btn btn-secondary btn-sm fw-semibold d-inline-flex align-items-center gap-1 px-3" onclick="return confirm('Tem certeza que deseja registrar FALTA para os pacientes selecionados?');">
+                        <i class="bi bi-x-lg"></i>
+                        <span>Falta</span>
+                    </button>
                 </div>
 
-                <button type="submit" name="acao" value="notificar_whatsapp" class="btn btn-success fw-bold">
-                    💬 Enviar Mensagem
-                </button>
-
-                <button type="submit" name="acao" value="notificar_amanha" class="btn btn-warning fw-bold">
-                    🔔 Confirmar Consulta Amanhã
-                </button>
-
-                <button type="submit" name="acao" value="atendido" class="btn btn-primary fw-bold" onclick="return confirm('Marcar os pacientes selecionados como ATENDIDOS?');">
-                    ✔ Atendido
-                </button>
-
-                <button type="submit" name="acao" value="falta" class="btn btn-secondary fw-bold" onclick="return confirm('Tem certeza que deseja registrar FALTA para os pacientes selecionados?');">
-                    ❌ Falta
-                </button>
-
-                <button type="submit" name="acao" value="excluir" class="btn btn-danger fw-bold ms-auto" onclick="return confirm('ATENÇÃO: Tem certeza que deseja EXCLUIR permanentemente os pacientes selecionados? Esta ação não pode ser desfeita.');">
-                    🗑️ Excluir
+                <button type="submit" name="acao" value="excluir" class="btn btn-outline-danger btn-sm fw-semibold d-inline-flex align-items-center gap-1 px-3" onclick="return confirm('ATENÇÃO: Tem certeza que deseja EXCLUIR permanentemente os pacientes selecionados? Esta ação não pode ser desfeita.');">
+                    <i class="bi bi-trash3"></i>
+                    <span>Excluir</span>
                 </button>
 
             </div>

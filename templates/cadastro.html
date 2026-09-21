@@ -2,10 +2,14 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Cadastro</title>
+    <title>Novo Cadastro - Sistema UBS</title>
+    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='estilo.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='icone.ico') }}" type="image/x-icon">
+    
     <style>
         body {
             background-image: url("{{ url_for('static', filename='tela_cadastro.png') }}");
@@ -13,47 +17,117 @@
             background-position: center;
             background-attachment: fixed;
             background-repeat: no-repeat;
+            min-height: 100vh;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(10px);
+            border: none;
+            border-radius: 16px;
+            border-top: 5px solid #18BC9C;
+        }
+
+        .icon-badge {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background-color: #e8f8f5;
+            color: #18BC9C;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .form-label {
+            font-size: 0.88rem;
+            color: #495057;
+            margin-bottom: 0.35rem;
+        }
+
+        .form-control, .form-select {
+            border-radius: 8px;
+            border-color: #ced4da;
+            padding: 0.6rem 0.75rem;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #18BC9C;
+            box-shadow: 0 0 0 0.25rem rgba(24, 188, 156, 0.2);
         }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-dark">
-        <div class="container-fluid">
-            <div class="d-flex align-items-center">
-                <a class="btn btn-outline-light btn-sm fw-bold" href="/">← Voltar ao Início</a>
-                
-                <!-- Formulário de Upload de CSV -->
-                <form method="POST" action="/injetar_script_bd" enctype="multipart/form-data" class="d-inline ms-3 d-flex gap-2">
-                    <input type="file" name="arquivo_csv" accept=".csv" class="form-control form-control-sm" style="max-width: 250px;" required>
-                    <button type="submit" class="btn btn-outline-warning btn-sm fw-bold" onclick="return confirm('⚠️ Importar pacientes desta planilha para o Banco de Dados?');">
-                        ⚙️ Importar CSV
-                    </button>
+
+    <!-- Barra de Navegação -->
+    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm" style="background-color: rgba(27, 54, 93, 0.95);">
+        <div class="container-fluid px-4">
+            
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <a class="btn btn-outline-light btn-sm fw-semibold d-inline-flex align-items-center gap-1" href="/">
+                    <i class="bi bi-arrow-left"></i>
+                    <span>Voltar</span>
+                </a>
+
+                <!-- Formulário de Upload de CSV mais sutil -->
+                <form method="POST" action="/injetar_script_bd" enctype="multipart/form-data" class="d-inline-flex ms-2">
+                    <div class="input-group input-group-sm">
+                        <input type="file" name="arquivo_csv" accept=".csv" class="form-control form-control-sm bg-light" required>
+                        <button type="submit" class="btn btn-warning fw-semibold d-inline-flex align-items-center gap-1" onclick="return confirm('⚠️ Importar pacientes desta planilha para o Banco de Dados?');">
+                            <i class="bi bi-file-earmark-spreadsheet"></i>
+                            <span>Importar CSV</span>
+                        </button>
+                    </div>
                 </form>
             </div>
-            <span class="navbar-text text-white fw-bold">NOVO CADASTRO</span>
+
+            <span class="navbar-brand mb-0 h6 fw-bold text-uppercase d-none d-md-inline-block">
+                <i class="bi bi-person-plus me-1"></i> Novo Cadastro
+            </span>
         </div>
     </nav>
 
-    <div class="container mt-5 mb-5">
-        <div class="card shadow mx-auto glass-card" style="max-width: 600px;">
-            <div class="card-body p-5">
+    <!-- Card de Formulário -->
+    <div class="container my-5">
+        <div class="card shadow mx-auto glass-card" style="max-width: 580px;">
+            <div class="card-body p-4 p-md-5">
+
+                <div class="text-center mb-4">
+                    <div class="icon-badge mb-2">
+                        <i class="bi bi-person-fill-add"></i>
+                    </div>
+                    <h4 class="fw-bold text-dark mb-1">Cadastrar Paciente</h4>
+                    <p class="text-muted small">Preencha os dados para encaminhar à fila de espera</p>
+                </div>
+
                 {% if mensagem %}
-                <div class="alert alert-success fw-bold text-center">{{ mensagem }}</div>
+                <div class="alert alert-success d-flex align-items-center gap-2 fw-semibold text-center py-2" role="alert">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <div>{{ mensagem }}</div>
+                </div>
                 {% endif %}
-                
+
                 <form id="cadastroForm" method="POST" action="/cadastro">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Nome Completo:</label>
-                        <input type="text" name="nome" class="form-control" required>
-                    </div>
                     
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Telefone / WhatsApp:</label>
-                        <input type="text" name="telefone" class="form-control" required>
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-person me-1 text-secondary"></i>Nome Completo:
+                        </label>
+                        <input type="text" name="nome" class="form-control" placeholder="Nome do paciente" required>
                     </div>
-                    
+
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Profissional:</label>
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-telephone me-1 text-secondary"></i>Telefone Celular:
+                        </label>
+                        <input type="tel" name="telefone" class="form-control" placeholder="(XX) 9XXXX-XXXX" inputmode="numeric" maxlength="15" pattern="\(\d{2}\) 9\d{4}-\d{4}" title="Digite o telefone no formato (XX) 9XXXX-XXXX" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-person-badge me-1 text-secondary"></i>Profissional:
+                        </label>
                         <select name="profissional" class="form-select">
                             <option>Dra. Jamile</option>
                             <option>Dra. Laurice</option>
@@ -64,15 +138,19 @@
 
                     <div class="row">
                         <div class="col-md-6 mb-4">
-                            <label class="form-label fw-bold">Tipo de Atendimento:</label>
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-tag me-1 text-secondary"></i>Tipo de Atendimento:
+                            </label>
                             <select name="atendimento_tipo" class="form-select">
                                 <option value="Primeira Vez">Nova Consulta</option>
                                 <option value="Retorno">Retorno</option>
                             </select>
                         </div>
-                        
+
                         <div class="col-md-6 mb-4">
-                            <label class="form-label fw-bold">Prioridade:</label>
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-shield-exclamation me-1 text-secondary"></i>Prioridade:
+                            </label>
                             <select name="prioridade" class="form-select">
                                 <option value="Eletivo">Eletivo</option>
                                 <option value="Prioritário">Prioritário</option>
@@ -81,24 +159,41 @@
                         </div>
                     </div>
 
-                    <button type="submit" id="btnSubmit" class="btn btn-success w-100 py-2 fw-bold mb-4">Salvar na Fila</button>
+                    <button type="submit" id="btnSubmit" class="btn btn-success w-100 py-2 fw-semibold d-flex align-items-center justify-content-center gap-2">
+                        <i class="bi bi-check2-circle"></i>
+                        <span>Salvar na Fila</span>
+                    </button>
                 </form>
 
             </div>
         </div>
     </div>
 
-   <!-- Script de Integração e Segurança Make -->
+    <!-- Script de Integração e Segurança Make -->
     <script>
+        const telefoneInput = document.querySelector('input[name="telefone"]');
+
+        telefoneInput.addEventListener('input', function() {
+            const digits = this.value.replace(/\D/g, '').slice(0, 11);
+
+            if (digits.length <= 2) {
+                this.value = digits ? `(${digits}` : '';
+            } else if (digits.length <= 7) {
+                this.value = `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+            } else {
+                this.value = `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+            }
+        });
+
         document.getElementById('cadastroForm').addEventListener('submit', async function(e) {
             e.preventDefault(); 
 
             const form = e.target;
             const btn = document.getElementById('btnSubmit');
-            const originalText = btn.innerHTML;
+            const originalHtml = btn.innerHTML;
             
             // Trava o botão para evitar duplicidade
-            btn.innerHTML = 'Enviando p/ Planilha... <span class="spinner-border spinner-border-sm"></span>';
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Enviando p/ Planilha...';
             btn.disabled = true;
 
             // Coleta os dados do formulário
@@ -112,25 +207,23 @@
             };
 
             try {
-                // A URL agora é injetada de forma segura pelo backend usando a variável do .env
                 const response = await fetch('{{ webhook_url }}', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
 
-                // Se o Make confirmar o recebimento, salva no sistema local
                 if (response.ok) {
                     form.submit(); 
                 } else {
                     alert('Erro de Segurança: O Make não confirmou o registro. A inserção foi cancelada.');
-                    btn.innerHTML = originalText;
+                    btn.innerHTML = originalHtml;
                     btn.disabled = false;
                 }
             } catch (error) {
                 console.error('Falha de Comunicação Webhook:', error);
                 alert('Erro na conexão com a automação. Verifique a internet e tente novamente.');
-                btn.innerHTML = originalText;
+                btn.innerHTML = originalHtml;
                 btn.disabled = false;
             }
         });
